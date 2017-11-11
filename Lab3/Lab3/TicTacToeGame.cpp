@@ -1,22 +1,14 @@
-//TIcTacToeGame.cpp
-//Halley Cummings
-// Contains function definitions for TicTacToeGame class. Includes a default constructur definition.
-
 #include "stdafx.h"
+#include "GameBaseHeader.h"
 #include "TicTacToeHeader.h"
-#include "Lab2Header.h"
-#include <vector>
+#include "Lab3Header.h"
 #include <string>
-#include <algorithm>
-
+#include <vector>
 using namespace std;
 
-TicTacToeGame::TicTacToeGame()
-	: rows(5), cols(5), currentPlayerIsX(true), XHistory("Player X: "), OHistory("Player O: "), currentPathsToWin(8){
-	// initialize board to be full of empty GamePieces
-	for (unsigned int i = 0; i < rows*cols; ++i) {
-		board.push_back(GamePiece());
-	} 
+TicTacToeGame::TicTacToeGame() 
+	: currentPlayerIsX(true), XHistory("Player X: "), OHistory("Player O: "), currentPathsToWin(8){
+
 }
 
 bool sameDisplayChar(vector<GamePiece> board, unsigned int x, unsigned int y, unsigned int z, unsigned int &pathsToWin) {
@@ -33,7 +25,7 @@ bool sameDisplayChar(vector<GamePiece> board, unsigned int x, unsigned int y, un
 		if ((a == " ") && (b != c) && (b != " ") && (c != " ")) {
 			--pathsToWin;
 		}
-		else if ((b == " ") && (a != c) && (a != " ") && (c!=" ")) {
+		else if ((b == " ") && (a != c) && (a != " ") && (c != " ")) {
 			--pathsToWin;
 		}
 		else if ((c == " ") && (b != a) && (b != " ") && (a != " ")) {
@@ -51,7 +43,7 @@ bool TicTacToeGame::done() {
 	//8 different cases that can result in done returning true
 	//index = (5*y) + x
 	currentPathsToWin = 8; // starts at 8 each time the different paths are checked
-	if(sameDisplayChar(board, 6, 7, 8, currentPathsToWin)){
+	if (sameDisplayChar(board, 6, 7, 8, currentPathsToWin)) {
 		return true; // bottom row
 	}
 	else if (sameDisplayChar(board, 11, 12, 13, currentPathsToWin)) {
@@ -80,30 +72,7 @@ bool TicTacToeGame::done() {
 	}
 }
 
-// declaration for ostream operator <<
-ostream &operator<<(ostream &out, const TicTacToeGame &gameClass) {
-	vector<GamePiece> pieces = gameClass.board;
-	for (int r = (int)gameClass.rows - 1; r >= -1; --r) {
-		for ( int c = -1; c < (int)gameClass.cols; ++c) {
-			// if in the -1 row or column, print markers
-			if ((r == -1) && (c == -1)){
-				out << "  ";
-			}
-			else if (r == -1) {
-				out << c << " ";
-			}
-			else if (c == -1) {
-				out << r << " ";
-			}
-			else {
-				// print each character
-				out << pieces[gameClass.cols*r + c].displayChar << " ";
-			}
-		}
-		out << endl; // print a new line at the end of every row
-	}
-	return out;
-}
+
 
 bool TicTacToeGame::draw() {
 	if (done()) { // if game is done, no draw
@@ -122,9 +91,9 @@ int TicTacToeGame::prompt(unsigned int &row, unsigned int &col) {
 	getline(cin, input); // take input in the form of a C++ string
 	cout << endl; // print blank line
 
-	// remove any spaces from input line
+				  // remove any spaces from input line
 	while (input.find(" ") != string::npos) {
-		input.erase(input.find(" "),1); 
+		input.erase(input.find(" "), 1);
 	}
 	//make all characters lowercase
 	makeLowercase(input);
@@ -152,14 +121,14 @@ int TicTacToeGame::prompt(unsigned int &row, unsigned int &col) {
 	//input.replace(commaChar, 1, " "); // replaces , char with space char in input string
 	unsigned int colVal = input.at(0) - '0'; // performs char to int conversion
 	unsigned int rowVal = input.at(2) - '0';
-	if ((rowVal <= 0) || (rowVal >= rows-1)) {
+	if ((rowVal <= 0) || (rowVal >= rows - 1)) {
 		// coordinate value is invalid
-		cout << "Please enter a row coordinate between 1 and " << (rows-2) << endl;
+		cout << "Please enter a row coordinate between 1 and " << (rows - 2) << endl;
 		return prompt(row, col);
 	}
-	if ((colVal <= 0) || (colVal >= cols-1)) {
+	if ((colVal <= 0) || (colVal >= cols - 1)) {
 		// coordinate value is invalid
-		cout << "Please enter a column coordinate between 1 and " << (cols-2) << endl;
+		cout << "Please enter a column coordinate between 1 and " << (cols - 2) << endl;
 		return prompt(row, col);
 	}
 
@@ -172,7 +141,7 @@ int TicTacToeGame::prompt(unsigned int &row, unsigned int &col) {
 	// input is an acceptable coordinate
 	row = rowVal;
 	col = colVal;
-	
+
 	return success;
 }
 
@@ -187,7 +156,7 @@ int TicTacToeGame::turn() {
 	//call prompt function
 	unsigned int row; unsigned int col;
 	int promptResult = prompt(row, col);
-	
+
 	//check if game was ended
 	if (promptResult == quitGame) {
 		cout << "Player " << currentPlayer << " has ended the game." << endl;
@@ -234,7 +203,7 @@ int TicTacToeGame::play() {
 		}
 		++turns;
 	}
-	
+
 	if (done()) {
 		if (currentPlayerIsX) {
 			cout << endl;
@@ -246,7 +215,7 @@ int TicTacToeGame::play() {
 		}
 		return success;
 	}
-	else if(draw()){
+	else if (draw()) {
 		cout << endl;
 		cout << "A draw occured after " << turns << " turns -- no valid moves remain." << endl;
 		return drawnGame;

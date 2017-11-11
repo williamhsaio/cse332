@@ -4,7 +4,7 @@
 
 
 #include "stdafx.h"
-#include "Lab2Header.h"
+#include "Lab3Header.h"
 #include "GamePieceHeader.h"
 #include "TicTacToeHeader.h"
 #include <iostream>
