@@ -41,3 +41,9 @@ Lab3/Debug/Lab3.exe
 *.vcxproj
 *.vcxproj
 *.exe
+Lab3/Lab3.sln
+Lab3/Lab3.VC.db
+*.sln
+*.exe
+*.cpp
+GameLab/GameLab/.vs/GameLab/v14/.suo
