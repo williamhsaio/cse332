@@ -8,7 +8,12 @@ using namespace std;
 
 TicTacToeGame::TicTacToeGame() 
 	: currentPlayerIsX(true), XHistory("Player X: "), OHistory("Player O: "), currentPathsToWin(8){
-
+	rows = 5;
+	cols = 5;
+	// initialize board to be full of empty GamePieces
+	for (unsigned int i = 0; i < rows*cols; ++i) {
+		board.push_back(GamePiece());
+	}
 }
 
 bool sameDisplayChar(vector<GamePiece> board, unsigned int x, unsigned int y, unsigned int z, unsigned int &pathsToWin) {

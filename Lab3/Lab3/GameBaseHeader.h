@@ -18,6 +18,7 @@ protected:
 	unsigned int rows; //set size of tic tac toe board to be 5 x 5
 	unsigned int cols;
 	vector<GamePiece> board; // creates empty vector
+	int displayLength;
 };
 
 // declaration for ostream operator

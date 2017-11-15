@@ -12,11 +12,8 @@
 using namespace std;
 
 GameBase::GameBase()
-	: rows(5), cols(5){
-	// initialize board to be full of empty GamePieces
-	for (unsigned int i = 0; i < rows*cols; ++i) {
-		board.push_back(GamePiece());
-	} 
+:rows(0), cols(0), displayLength(0){
+
 }
 
 // declaration for ostream operator <<
