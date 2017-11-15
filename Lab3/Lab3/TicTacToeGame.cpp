@@ -48,34 +48,44 @@ bool TicTacToeGame::done() {
 	// checks whether there are 3 X's or 3 0's somewhere on the board
 	//8 different cases that can result in done returning true
 	//index = (5*y) + x
+	bool isDone = false;
 	currentPathsToWin = 8; // starts at 8 each time the different paths are checked
 	if (sameDisplayChar(board, 6, 7, 8, currentPathsToWin)) {
-		return true; // bottom row
+		isDone = true; // bottom row
 	}
 	else if (sameDisplayChar(board, 11, 12, 13, currentPathsToWin)) {
-		return true; //middle row
+		isDone = true;
 	}
 	else if (sameDisplayChar(board, 16, 17, 18, currentPathsToWin)) {
-		return true; //top row
+		isDone = true;
 	}
 	else if (sameDisplayChar(board, 16, 11, 6, currentPathsToWin)) {
-		return true; //first col
+		isDone = true;
 	}
 	else if (sameDisplayChar(board, 12, 17, 7, currentPathsToWin)) {
-		return true; //middle col
+		isDone = true;
 	}
 	else if (sameDisplayChar(board, 18, 13, 8, currentPathsToWin)) {
-		return true; // last col
+		isDone = true;
 	}
 	else if (sameDisplayChar(board, 6, 12, 18, currentPathsToWin)) {
-		return true; //upper diagonal
+		isDone = true;
 	}
 	else if (sameDisplayChar(board, 16, 12, 8, currentPathsToWin)) {
-		return true; //lower diagonal
+		isDone = true;
 	}
-	else {
-		return false; //no one wins
+	if (isDone && (turns !=0 )) {
+		if (currentPlayerIsX) {
+			cout << endl;
+			cout << "Player O won the game after " << turns << " turns." << endl;
+		}
+		else {
+			cout << endl;
+			cout << "Player X won the game after " << turns << " turns." << endl;
+		}
+		turns = 0; // set to 0 so message only prints once
 	}
+	return isDone;
 }
 
 
@@ -92,9 +102,9 @@ bool TicTacToeGame::draw() {
 }
 
 int TicTacToeGame::turn() {
-	string currentPlayer = "OoO";
+	string currentPlayer = "O";
 	if (currentPlayerIsX) {
-		currentPlayer = "XX";
+		currentPlayer = "X";
 	}
 	cout << "-------------------------------------------" << endl; // print line to divide between turns
 	cout << "The current player is " << currentPlayer << endl;
@@ -137,41 +147,6 @@ int TicTacToeGame::turn() {
 	return success;
 }
 
-int TicTacToeGame::play() {
-	// print initial gameboard
-	cout << "GAMEBOARD" << endl;
-	print();
-	cout << endl;
-
-	int turns = 0;
-	while (!draw() && !done()) {
-		//call turn repeatedly while valid moves are left and no one has won
-		int turnResult = turn();
-		if (turnResult == quitGame) { // check if a user quit 
-			cout << "Game ended after " << turns << " turns. " << endl;
-			return quitGame;
-		}
-		++turns;
-	}
-
-	if (done()) {
-		if (currentPlayerIsX) {
-			cout << endl;
-			cout << "Player O won the game after " << turns << " turns." << endl;
-		}
-		else {
-			cout << endl;
-			cout << "Player X won the game after " << turns << " turns." << endl;
-		}
-		return success;
-	}
-	else if (draw()) {
-		cout << endl;
-		cout << "A draw occured after " << turns << " turns -- no valid moves remain." << endl;
-		return drawnGame;
-	}
-	return gameInterrupted; // ended in unexpected way (not win, draw, or quit)
-}
 
 // declaration for ostream operator <<
 ostream &operator<<(ostream &out, const TicTacToeGame &game) {

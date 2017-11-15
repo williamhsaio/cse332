@@ -73,3 +73,30 @@ int GameBase::prompt(unsigned int &row, unsigned int &col) {
 
 	return success;
 }
+
+int GameBase::play() {
+	// print initial gameboard
+	cout << "GAMEBOARD" << endl;
+	print(); // print out current gameboard
+	cout << endl;
+
+	while (!draw() && !done()) {
+		//call turn repeatedly while valid moves are left and no one has won
+		int turnResult = turn();
+		if (turnResult == quitGame) { // check if a user quit 
+			cout << "Game ended after " << turns << " turns. " << endl;
+			return quitGame;
+		}
+		++turns;
+	}
+
+	if (done()) {
+		return success;
+	}
+	else if (draw()) {
+		cout << endl;
+		cout << "A draw occured after " << turns << " turns -- no valid moves remain." << endl;
+		return drawnGame;
+	}
+	return gameInterrupted; // ended in unexpected way (not win, draw, or quit)
+}

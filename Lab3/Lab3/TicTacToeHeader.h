@@ -10,9 +10,8 @@ public:
 	TicTacToeGame();
 	virtual bool done();
 	virtual bool draw();
+	virtual int turn();
 	
-	int turn();
-	int play();
 	virtual void print();
 private:
 	bool currentPlayerIsX;
