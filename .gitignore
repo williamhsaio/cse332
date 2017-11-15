@@ -37,3 +37,7 @@ OverloadingStudio/OverloadingStudio/targetver.h
 OverloadingStudio/OverloadingStudio/Header.h
 Lab3/Debug/Lab3.exe
 Lab3/Debug/Lab3.exe
+*.db
+*.vcxproj
+*.vcxproj
+*.exe

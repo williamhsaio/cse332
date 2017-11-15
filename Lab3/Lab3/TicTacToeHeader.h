@@ -4,16 +4,22 @@ using namespace std;
 #include "GameBaseHeader.h"
 
 class TicTacToeGame : public GameBase {
+	friend ostream &operator<<(ostream &out, const TicTacToeGame &game);
+
 public:
 	TicTacToeGame();
-	bool done();
-	bool draw();
-	int prompt(unsigned int &a, unsigned int &b);
+	virtual bool done();
+	virtual bool draw();
+	
 	int turn();
 	int play();
+	virtual void print();
 private:
 	bool currentPlayerIsX;
 	string XHistory;
 	string OHistory;
 	unsigned int currentPathsToWin;
 };
+
+// declaration for ostream operator
+ostream &operator<<(ostream &out, const TicTacToeGame &game);

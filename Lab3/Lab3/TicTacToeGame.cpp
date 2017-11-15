@@ -4,6 +4,7 @@
 #include "Lab3Header.h"
 #include <string>
 #include <vector>
+#include <iomanip>
 using namespace std;
 
 TicTacToeGame::TicTacToeGame() 
@@ -90,70 +91,10 @@ bool TicTacToeGame::draw() {
 	return true;
 }
 
-int TicTacToeGame::prompt(unsigned int &row, unsigned int &col) {
-	cout << "Please enter the coordinates of a square on the board in the format 'col,row' or enter 'quit' to end the game." << endl;
-	string input;
-	getline(cin, input); // take input in the form of a C++ string
-	cout << endl; // print blank line
-
-				  // remove any spaces from input line
-	while (input.find(" ") != string::npos) {
-		input.erase(input.find(" "), 1);
-	}
-	//make all characters lowercase
-	makeLowercase(input);
-	// check if this is the quit command
-	if (input == "quit") {
-		return quitGame;
-	}
-	if (input.size() > 3) {
-		// improperly formatted string; call prompt again
-		cout << "Input string is too long." << endl;
-		return prompt(row, col);
-	}
-	size_t commaChar = input.find(",");
-	if (commaChar != 1) {
-		// comma is not between coordinates; call prompt again
-		cout << "Insert comma between coordinates." << endl;
-		return prompt(row, col);
-	}
-
-	if (input.size() < 3) {
-		// not enough coordinates entered
-		cout << "Please enter two coordinate values." << endl;
-		return prompt(row, col);
-	}
-	//input.replace(commaChar, 1, " "); // replaces , char with space char in input string
-	unsigned int colVal = input.at(0) - '0'; // performs char to int conversion
-	unsigned int rowVal = input.at(2) - '0';
-	if ((rowVal <= 0) || (rowVal >= rows - 1)) {
-		// coordinate value is invalid
-		cout << "Please enter a row coordinate between 1 and " << (rows - 2) << endl;
-		return prompt(row, col);
-	}
-	if ((colVal <= 0) || (colVal >= cols - 1)) {
-		// coordinate value is invalid
-		cout << "Please enter a column coordinate between 1 and " << (cols - 2) << endl;
-		return prompt(row, col);
-	}
-
-	if (board[rows*rowVal + colVal].displayChar != " ") {
-		// this space is already occupied
-		cout << "This space is already full." << endl;
-		return prompt(row, col);
-	}
-
-	// input is an acceptable coordinate
-	row = rowVal;
-	col = colVal;
-
-	return success;
-}
-
 int TicTacToeGame::turn() {
-	char currentPlayer = 'O';
+	string currentPlayer = "OoO";
 	if (currentPlayerIsX) {
-		currentPlayer = 'X';
+		currentPlayer = "XX";
 	}
 	cout << "-------------------------------------------" << endl; // print line to divide between turns
 	cout << "The current player is " << currentPlayer << endl;
@@ -171,6 +112,10 @@ int TicTacToeGame::turn() {
 	// make move 
 	int index = rows*row + col;
 	board[index].displayChar = currentPlayer;
+	// updates displayLength if new display string is of longer length than previous ones
+	if (currentPlayer.length() > displayLength) {
+		displayLength = currentPlayer.length();
+	}
 
 
 	//print board for current move
@@ -195,7 +140,7 @@ int TicTacToeGame::turn() {
 int TicTacToeGame::play() {
 	// print initial gameboard
 	cout << "GAMEBOARD" << endl;
-	cout << *this << endl;
+	print();
 	cout << endl;
 
 	int turns = 0;
@@ -226,4 +171,36 @@ int TicTacToeGame::play() {
 		return drawnGame;
 	}
 	return gameInterrupted; // ended in unexpected way (not win, draw, or quit)
+}
+
+// declaration for ostream operator <<
+ostream &operator<<(ostream &out, const TicTacToeGame &game) {
+	vector<GamePiece> pieces = game.board;
+	cout << "display length " << game.displayLength << endl;
+	for (int r = (int)game.rows - 1; r >= -1; --r) {
+		for (int c = -1; c < (int)game.cols; ++c) {
+
+			// if in the -1 row or column, print markers
+			if ((r == -1) && (c == -1)) {
+				out << " ";
+			}
+			else if (r == -1) {
+				out << setw(game.displayLength+1) << c;
+			}
+			else if (c == -1) {
+				out << r;
+			}
+			else {
+				// print each character plus needed white space
+				string display = pieces[game.cols*r + c].displayChar;
+				out << setw(game.displayLength + 1) << display;
+			}
+		}
+		out << endl; // print a new line at the end of every row
+	}
+	return out;
+}
+
+void TicTacToeGame::print() {
+	cout << *this << endl;
 }

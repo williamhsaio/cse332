@@ -9,18 +9,19 @@
 #include <string>
 
 class GameBase {
-	friend ostream &operator<<(ostream &out, const GameBase &gameClass);
 public:
 	GameBase();
-
+	virtual void print() = 0;
+	virtual bool done() = 0;
+	virtual bool draw() = 0;
+	int prompt(unsigned int &a, unsigned int &b);
 protected:
 	//member variables common to all games
 	unsigned int rows; //set size of tic tac toe board to be 5 x 5
 	unsigned int cols;
 	vector<GamePiece> board; // creates empty vector
-	int displayLength;
+	unsigned int displayLength;
 };
 
-// declaration for ostream operator
-ostream &operator<<(ostream &out, const GameBase &gameClass);
+
 
