@@ -11,7 +11,6 @@ public:
 	virtual bool done();
 	virtual bool draw();
 	virtual int turn();
-	
 	virtual void print();
 private:
 	bool currentPlayerIsX;

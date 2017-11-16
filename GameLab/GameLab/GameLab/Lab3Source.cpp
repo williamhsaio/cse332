@@ -7,6 +7,8 @@
 #include "Lab3Header.h"
 #include "GamePieceHeader.h"
 #include "TicTacToeHeader.h"
+#include "GomokuHeader.h"
+#include "GameBaseHeader.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -25,22 +27,28 @@ int makeLowercase(string & text) {
 }
 
 
-int usageMessage(const string & programNameRef, const string & directions)
+int usageMessage( const string & directions)
 {
-	cout << "Please run the " << programNameRef << "game by " << directions << endl;
+	cout << "Please run the game by " << directions << endl;
 	return success;
 }
 
 int main(int argc, char* argv[])
 {	
 	if (argc != numArguments) {
-		usageMessage("TicTacToe", "passing 'TicTacToe' as a command line argument. ");
+		usageMessage("passing 'TicTacToe' or 'Gomoku' as a command line argument. ");
 		return numCmdArgumentsIncorrect;
 	}
-	if (strcmp(argv[gameName], "TicTacToe")) {
-		usageMessage("TicTacToe", "passing 'TicTacToe' as a command line argument. ");
+	if ((strcmp(argv[gameName], "TicTacToe") != 0) && (strcmp(argv[gameName], "Gomoku") != 0)){
+		usageMessage("passing 'TicTacToe' or 'Gomoku' as a command line argument. ");
 		return gameNameInvalid;
 	}
-	TicTacToeGame game = TicTacToeGame(); //declare a new empty gameboard
-	return game.play(); //gives status of game played : success, drawn, quit
+	if (strcmp(argv[gameName], "TicTacToe") == 0) {
+		TicTacToeGame game = TicTacToeGame(); //declare a new empty gameboard
+		return game.play(); //gives status of game played : success, drawn, quit
+	}
+	else if (strcmp(argv[gameName], "Gomoku") == 0) {
+		Gomoku game = Gomoku();
+		return game.play();
+	}
 }
