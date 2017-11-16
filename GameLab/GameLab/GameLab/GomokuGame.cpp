@@ -25,10 +25,11 @@ Gomoku::Gomoku()
 ostream &operator<<(ostream &out, const Gomoku &gameclass) {
 	vector<GamePiece> pieces = gameclass.board;
 	int vertRow = 19;
-	for (int i = 0; i < (int)gameclass.rows; i++) {
+	for (int i = 0; i < (int)gameclass.cols; i++) { // changed to cols instead of row
 		out << setw(2) << vertRow << " ";
 		for (int j = 0; j < (int)gameclass.rows; j++) {
-			out << gameclass.board[360 - (19 * i) - (18 - j)].displayChar << "  ";
+			//	out << gameclass.board[360 - (19 * i) - (18 - j)].displayChar << "  ";
+			out << gameclass.board[gameclass.cols*j + i].displayChar << "  ";
 		}
 		vertRow--;
 		out << endl;
@@ -98,9 +99,6 @@ bool Gomoku::done() { //checks if there is 5 in a row
 			position = position + 20;
 		}
 	}
-
-
-
 
 	//check the horizonal and Vertical
 	for (int i = 0; i < 18; i++) {  //the vertical side

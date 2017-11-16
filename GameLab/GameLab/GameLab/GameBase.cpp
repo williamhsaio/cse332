@@ -14,13 +14,14 @@ using namespace std;
 GameBase::GameBase()
 :rows(0), cols(0), displayLength(0){}
 
+
 int GameBase::prompt(unsigned int &row, unsigned int &col) {
 	cout << "Please enter the coordinates of a square on the board in the format 'col,row' or enter 'quit' to end the game." << endl;
 	string input;
 	getline(cin, input); // take input in the form of a C++ string
 	cout << endl; // print blank line
 
-				  // remove any spaces from input line
+	// remove any spaces from input line
 	while (input.find(" ") != string::npos) {
 		input.erase(input.find(" "), 1);
 	}
@@ -30,13 +31,24 @@ int GameBase::prompt(unsigned int &row, unsigned int &col) {
 	if (input == "quit") {
 		return quitGame;
 	}
-	if (input.size() > 3) {
+
+	if (input.size() > 5) {
 		// improperly formatted string; call prompt again
 		cout << "Input string is too long." << endl;
 		return prompt(row, col);
 	}
+
 	size_t commaChar = input.find(",");
-	if (commaChar != 1) {
+	if (commaChar != std::string::npos) {
+		// if comma is found in string, replace with space
+		input.replace(commaChar, 1, " ");
+		if (input.find(",") != std::string::npos) {
+			// more than one comma was found
+			cout << "Insert only one comma between coordinates" << endl;
+			return prompt(row, col);
+		}
+	}
+	else {
 		// comma is not between coordinates; call prompt again
 		cout << "Insert comma between coordinates." << endl;
 		return prompt(row, col);
@@ -47,9 +59,11 @@ int GameBase::prompt(unsigned int &row, unsigned int &col) {
 		cout << "Please enter two coordinate values." << endl;
 		return prompt(row, col);
 	}
-	//input.replace(commaChar, 1, " "); // replaces , char with space char in input string
-	unsigned int colVal = input.at(0) - '0'; // performs char to int conversion
-	unsigned int rowVal = input.at(2) - '0';
+	unsigned int colVal;
+	unsigned int rowVal;
+	stringstream iss(input);
+	iss >> colVal >> rowVal;
+
 	if ((rowVal <= 0) || (rowVal >= rows - 1)) {
 		// coordinate value is invalid
 		cout << "Please enter a row coordinate between 1 and " << (rows - 2) << endl;
