@@ -101,7 +101,6 @@ bool TicTacToeGame::draw() {
 	return true;
 }
  bool TicTacToeGame::coordinateValid(unsigned int row, unsigned int col) {
-	 cout << "row " << row << " col " << col << endl;
 	//check coordinate is valid for the TicTacToe board
 	if ((row <= 0) || (row >= rows - 1)) {
 		// coordinate value is invalid
@@ -152,7 +151,8 @@ int TicTacToeGame::turn() {
 
 
 	//print board for current move
-	cout << *this << endl;
+	print();
+
 	//print player's history
 	if (currentPlayerIsX) {
 		XHistory += " (" + to_string(row) + "," + to_string(col) + "), ";
@@ -174,7 +174,6 @@ int TicTacToeGame::turn() {
 // declaration for ostream operator <<
 ostream &operator<<(ostream &out, const TicTacToeGame &game) {
 	vector<GamePiece> pieces = game.board;
-	cout << "display length " << game.displayLength << endl;
 	for (int r = (int)game.rows - 1; r >= -1; --r) {
 		for (int c = -1; c < (int)game.cols; ++c) {
 

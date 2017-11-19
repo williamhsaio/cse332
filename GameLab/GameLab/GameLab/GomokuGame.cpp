@@ -28,8 +28,8 @@ ostream &operator<<(ostream &out, const Gomoku &gameclass) {
 	for (int i = 0; i < (int)gameclass.cols; i++) { // changed to cols instead of row
 		out << setw(2) << vertRow << " ";
 		for (int j = 0; j < (int)gameclass.rows; j++) {
-			//	out << gameclass.board[360 - (19 * i) - (18 - j)].displayChar << "  ";
-			out << gameclass.board[gameclass.cols*j + i].displayChar << "  ";
+				//out << gameclass.board[360 - (19 * i) - (18 - j)].displayChar << "  ";
+			out << gameclass.board[(gameclass.rows*gameclass.cols-1) - (gameclass.cols * i) - (gameclass.rows - j -1)].displayChar << "  ";
 		}
 		vertRow--;
 		out << endl;
@@ -58,6 +58,7 @@ bool Gomoku::done() { //checks if there is 5 in a row
 				bDR++;
 				wDR = 0;
 				if (bDR == 5) {
+					cout << "Player B won the game after " << turns << " turns." << endl;
 					return true;
 				}
 			}
@@ -65,6 +66,7 @@ bool Gomoku::done() { //checks if there is 5 in a row
 				wDR++;
 				bDR = 0;
 				if (wDR == 5) {
+					cout << "Player W won the game after " << turns << " turns." << endl;
 					return true;
 				}
 			}
@@ -81,6 +83,7 @@ bool Gomoku::done() { //checks if there is 5 in a row
 				bDL++;
 				wDL = 0;
 				if (bDL == 5) {
+					cout << "Player B won the game after " << turns << " turns." << endl;
 					return true;
 				}
 			}
@@ -88,6 +91,7 @@ bool Gomoku::done() { //checks if there is 5 in a row
 				wDL++;
 				bDL = 0;
 				if (wDL == 5) {
+					cout << "Player W won the game after " << turns << " turns." << endl;
 					return true;
 				}
 			}
@@ -110,6 +114,7 @@ bool Gomoku::done() { //checks if there is 5 in a row
 				bhCounter++;
 				whCounter = 0;
 				if (bhCounter == 5) {
+					cout << "Player B won the game after " << turns << " turns." << endl;
 					return true;
 				}
 
@@ -118,6 +123,7 @@ bool Gomoku::done() { //checks if there is 5 in a row
 				bvCounter++;
 				wvCounter = 0;
 				if (bvCounter == 5) {
+					cout << "Player B won the game after " << turns << " turns." << endl;
 					return true;
 				}
 
@@ -134,6 +140,7 @@ bool Gomoku::done() { //checks if there is 5 in a row
 				whCounter++;
 				bhCounter = 0;
 				if (whCounter == 5) {
+					cout << "Player W won the game after " << turns << " turns." << endl;
 					return true;
 				}
 
@@ -142,6 +149,7 @@ bool Gomoku::done() { //checks if there is 5 in a row
 				wvCounter++;
 				bvCounter = 0;
 				if (wvCounter == 5) {
+					cout << "Player W won the game after " << turns << " turns." << endl;
 					return true;
 				}
 
@@ -200,51 +208,23 @@ int Gomoku::turn() {
 	
 	while (x != success) { //while prompt returns false meaning a bad input, or you've quit the game
 		if (x == quitGame) {
-			cout << "There were " << playerCounter << " moves played. Someone quit the game" << endl;
+			cout << "Player " << currentPlayer << " has quit the game." << endl;
 			return quitGame; //Player has quit
 		}
 		x = prompt(a, b);
 	}
 
-	board[cols*(b - 1) + (a - 1)].displayChar = currentPlayer;  //puts the proper char in the space
+	board[cols*(a - 1) + (b - 1)].displayChar = currentPlayer;  //puts the proper char in the space
 
 	playerCounter++; //keeps track of the # of turns
-	cout << *this << endl;  //Dereferences the pointer to the current instance of the TicTacToeGame
-							// Puts it into the output stream that we just redefined
+	// print board
+	print();
 
-	if (done()) {
-		cout << currentPlayer << " wins!" << endl;
-		return successTTT;
-	}
+	isPlayerB = !isPlayerB; // switch players
 
-	if (draw()) {
-		cout << "There were " << playerCounter << " moves played. There are no winning moves left." << endl;
-		return Draw;
-	}
-
-
-	if (isPlayerB == false) {
-		isPlayerB = true;
-	}
-	else {
-		isPlayerB = false;
-	}
-
-
-	return nextTurn;
-}/*
-int Gomoku::play() {
-	while (int temp = turn()) {
-		if (temp == nextTurn) {
-			continue;
-		}
-		else {
-			return temp;
-		}
-	}
-	return successTTT;
+	return success;
 }
-*/
+
 void Gomoku::print() {
 	cout << *this << endl;
 }

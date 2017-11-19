@@ -46,3 +46,4 @@ Lab3/Lab3.VC.db
 *.sln
 *.exe
 GameLab/GameLab/.vs/GameLab/v14/.suo
+*.user

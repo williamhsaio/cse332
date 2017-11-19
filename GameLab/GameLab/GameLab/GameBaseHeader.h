@@ -18,6 +18,7 @@ public:
 	virtual int turn() = 0;
 	int play();
 	virtual bool coordinateValid(unsigned int row, unsigned int col)=0;
+	static GameBase* inputArgs(int argc, char* argv[]);
 
 
 protected:

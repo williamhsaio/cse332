@@ -13,7 +13,7 @@ using namespace std;
 
 enum arrayIndices { programName, gameName , numArguments};
 enum failures {
-	success, quitGame, drawnGame, gameInterrupted, numCmdArgumentsIncorrect, gameNameInvalid
+	success, quitGame, drawnGame, gameInterrupted, memoryError, commandLineArgsInvalid
 };
 
 //function declarations

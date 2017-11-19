@@ -5,6 +5,8 @@
 #include "stdafx.h"
 #include "GameBaseHeader.h"
 #include "Lab3Header.h"
+#include "TicTacToeHeader.h"
+#include "GomokuHeader.h"
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -14,6 +16,29 @@ using namespace std;
 GameBase::GameBase()
 :rows(0), cols(0), displayLength(0){}
 
+GameBase* GameBase::inputArgs(int argc, char* argv[]) {
+	GameBase* newGame;
+	if (strcmp(argv[gameName], "TicTacToe") == 0) {
+		try {
+			newGame = new TicTacToeGame();
+		}
+		catch (bad_alloc b) {
+			throw b;
+		}
+	}
+	else if (strcmp(argv[gameName], "Gomoku") == 0) {
+		try {
+			 newGame = new Gomoku();
+		}
+		catch (bad_alloc b) {
+			throw b;
+		}
+	}
+	else {
+		newGame = nullptr;
+	}
+	return newGame; // returns null ptr if not assigned
+}
 
 int GameBase::prompt(unsigned int &row, unsigned int &col) {
 	cout << "Please enter the coordinates of a square on the board in the format 'col,row' or enter 'quit' to end the game." << endl;

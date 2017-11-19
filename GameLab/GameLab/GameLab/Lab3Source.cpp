@@ -13,6 +13,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <memory>
 using namespace std;
 
 int makeLowercase(string & text) {
@@ -35,20 +36,20 @@ int usageMessage( const string & directions)
 
 int main(int argc, char* argv[])
 {	
-	if (argc != numArguments) {
+	shared_ptr<GameBase> newGame;
+	try {
+		newGame = shared_ptr<GameBase> (GameBase::inputArgs(argc, argv));
+	}
+	catch (bad_alloc b) {
+		return memoryError;
+	}
+	if (newGame == nullptr) {
+		// some error with input
 		usageMessage("passing 'TicTacToe' or 'Gomoku' as a command line argument. ");
-		return numCmdArgumentsIncorrect;
+		return commandLineArgsInvalid;
 	}
-	if ((strcmp(argv[gameName], "TicTacToe") != 0) && (strcmp(argv[gameName], "Gomoku") != 0)){
-		usageMessage("passing 'TicTacToe' or 'Gomoku' as a command line argument. ");
-		return gameNameInvalid;
+	else {
+		return newGame->play();
 	}
-	if (strcmp(argv[gameName], "TicTacToe") == 0) {
-		TicTacToeGame game = TicTacToeGame(); //declare a new empty gameboard
-		return game.play(); //gives status of game played : success, drawn, quit
-	}
-	else if (strcmp(argv[gameName], "Gomoku") == 0) {
-		Gomoku game = Gomoku();
-		return game.play();
-	}
+
 }
