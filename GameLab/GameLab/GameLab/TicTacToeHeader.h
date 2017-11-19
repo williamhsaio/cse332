@@ -12,6 +12,7 @@ public:
 	virtual bool draw();
 	virtual int turn();
 	virtual void print();
+	virtual bool coordinateValid(unsigned int row, unsigned int col);
 private:
 	bool currentPlayerIsX;
 	string XHistory;

@@ -17,6 +17,8 @@ public:
 	int prompt(unsigned int &a, unsigned int &b);
 	virtual int turn() = 0;
 	int play();
+	virtual bool coordinateValid(unsigned int row, unsigned int col)=0;
+
 
 protected:
 	//member variables common to all games

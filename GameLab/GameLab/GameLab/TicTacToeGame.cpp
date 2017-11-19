@@ -100,8 +100,34 @@ bool TicTacToeGame::draw() {
 	// otherwise, game is a draw 
 	return true;
 }
-
+ bool TicTacToeGame::coordinateValid(unsigned int row, unsigned int col) {
+	 cout << "row " << row << " col " << col << endl;
+	//check coordinate is valid for the TicTacToe board
+	if ((row <= 0) || (row >= rows - 1)) {
+		// coordinate value is invalid
+		cout << "Please enter a row coordinate between 1 and " << (rows - 2) << endl;
+		// call turn again to get a valid coordinate
+		return false;
+	}
+	if ((col <= 0) || (col >= cols - 1)) {
+		// coordinate value is invalid
+		cout << "Please enter a column coordinate between 1 and " << (cols - 2) << endl;
+		// call turn again to get a valid coordinate
+		return false;
+	}
+	if (board[rows*row + col].displayChar != " ") {
+		// this space is already occupied
+		cout << "This space is already full." << endl;
+		// call turn again to get a valid coordinate
+		return false;
+	}
+	return true;
+}
 int TicTacToeGame::turn() {
+	//call prompt function
+	unsigned int row; unsigned int col;
+	int promptResult = prompt(row, col);
+
 	string currentPlayer = "O";
 	if (currentPlayerIsX) {
 		currentPlayer = "X";
@@ -109,9 +135,6 @@ int TicTacToeGame::turn() {
 	cout << "-------------------------------------------" << endl; // print line to divide between turns
 	cout << "The current player is " << currentPlayer << endl;
 
-	//call prompt function
-	unsigned int row; unsigned int col;
-	int promptResult = prompt(row, col);
 
 	//check if game was ended
 	if (promptResult == quitGame) {

@@ -55,7 +55,6 @@ bool Gomoku::done() { //checks if there is 5 in a row
 		int position = i;
 		while ((position) < 361) { //checks you're inbounds
 			if ((board[position].displayChar == "B")) {
-				cout << "got here" << endl;
 				bDR++;
 				wDR = 0;
 				if (bDR == 5) {
@@ -167,56 +166,38 @@ bool Gomoku::draw() {
 	return true;
 }
 
-/*
-//need to take out the bool hasQuit changed it to an int function
-int Gomoku::prompt(unsigned int& a, unsigned int& b) {
 
-	cout << "Enter a valid coordinate" << endl;
-	//check the type of the input
-	string s;
-	getline(cin, s);
-	if (s == "quit") {
-		//hasQuit = true;
-		cout << "Game has been quit" << endl;
-		return quitGame;
-	}
-
-	if ((s.length() > 6) || (s.length() < 3)) { //checks that there are 3 chars
-		cout << "wrong arguments" << endl;
-		return numCmdArgumentsIncorrect;
-	}
-
-	for (unsigned int i = 0; i < s.length(); i++) {
-		if (s[i] == ',') {
-			s[i] = ' ';
+bool Gomoku::coordinateValid(unsigned int row, unsigned int col) {
+	// check that this coordinate is valid for the Gomoku game
+	if ((row < 20) && (row > 0) && (col < 20) && (col > 0)) { //if its within the playing area
+		if (board[cols*(row - 1) + (col - 1)].displayChar != " ") {
+			//this location is already full; prompt for a new coordinate
+			cout << "This board location is not available." << endl;
+			return false;
+		}
+		else {
+			return true;
 		}
 	}
-	stringstream move(s);
-	if (move >> a >> b) {
-		if ((a < 20) && (a > 0) && (b < 20) && (b > 0)) { //if its within the playing area
-			if (board[cols*(b - 1) + (a - 1)].displayChar == " ") {
-				//a valid point
-				cout << "success" << endl;
-				return success;
-			}
-		}
+	else {
+		// prompt for new coordinate
+		cout << "The coordinates entered are not within the 19 x 19 board." << endl;
+		return false;
 	}
-	cout << "game interrupt" << endl;
-	return gameInterrupted; //not sure if this is the right error message
-}*/
+}
 
-//need to add errors for the prompt
 int Gomoku::turn() {
 	unsigned int a;
 	unsigned int b;
-	//int promptResult = prompt(a,b);
+	int x = prompt(a, b);
+
 	char currentPlayer = 'W';
 	if (isPlayerB) {
 		currentPlayer = 'B';
 	}
 
 	cout << "It is  " << currentPlayer << "'s turn." << endl;
-	int x = prompt(a, b);
+	
 	while (x != success) { //while prompt returns false meaning a bad input, or you've quit the game
 		if (x == quitGame) {
 			cout << "There were " << playerCounter << " moves played. Someone quit the game" << endl;

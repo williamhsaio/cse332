@@ -44,7 +44,7 @@ int GameBase::prompt(unsigned int &row, unsigned int &col) {
 		input.replace(commaChar, 1, " ");
 		if (input.find(",") != std::string::npos) {
 			// more than one comma was found
-			cout << "Insert only one comma between coordinates" << endl;
+			cout << "Insert only one comma between coordinates." << endl;
 			return prompt(row, col);
 		}
 	}
@@ -64,24 +64,15 @@ int GameBase::prompt(unsigned int &row, unsigned int &col) {
 	stringstream iss(input);
 	iss >> colVal >> rowVal;
 
-	if ((rowVal <= 0) || (rowVal >= rows - 1)) {
-		// coordinate value is invalid
-		cout << "Please enter a row coordinate between 1 and " << (rows - 2) << endl;
-		return prompt(row, col);
-	}
-	if ((colVal <= 0) || (colVal >= cols - 1)) {
-		// coordinate value is invalid
-		cout << "Please enter a column coordinate between 1 and " << (cols - 2) << endl;
+	// at this point, 2 coordinates have been found. Range of coordinates has not been checked -- 
+	// each game has different requirements. Call coordinateValid() to check.
+
+	if (!coordinateValid(rowVal, colVal)) {
+		// coordinate is invalid for this gameboard
 		return prompt(row, col);
 	}
 
-	if (board[rows*rowVal + colVal].displayChar != " ") {
-		// this space is already occupied
-		cout << "This space is already full." << endl;
-		return prompt(row, col);
-	}
-
-	// input is an acceptable coordinate
+	// coordinate is valid - > play a turn
 	row = rowVal;
 	col = colVal;
 

@@ -18,17 +18,10 @@ using namespace std;
 
 enum errors { successTTT, playerQuit, gameOver, Draw, nextTurn };
 
-//defines a point
-//struct points {
-//	unsigned int a;
-//	unsigned int b;
-//};
-
 class Gomoku : public GameBase{
 
 private:
 	vector<GamePiece> board;
-	//vector<char>rows;
 	char currentPlayer = 'B';  //To be moved to the gameBase
 	int playerCounter = 0;
 	unsigned int rows;
@@ -37,15 +30,12 @@ private:
 
 
 public:
-	//Make sure that I change certain functions to Virtual
 	Gomoku();
 	virtual bool done();
 	virtual bool draw();
-	//virtual int prompt(unsigned int&a, unsigned int&b); // defined in base class for both games
 	virtual int turn();
-	//virtual int play();
 	virtual void print();
-
+	virtual bool coordinateValid(unsigned int row, unsigned int col);
 
 	friend ostream& operator<<(ostream& os, const Gomoku& gmk); //Making it so that when you call TicTacToe
 																// the computer knows what to display
