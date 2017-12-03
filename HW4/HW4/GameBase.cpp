@@ -6,6 +6,7 @@
 #include "GameBaseHeader.h"
 #include "Lab4Header.h"
 #include "TicTacToeHeader.h"
+#include "SudokuHeader.h"
 #include "GomokuHeader.h"
 #include <vector>
 #include <string>
@@ -29,6 +30,14 @@ GameBase* GameBase::inputArgs(int argc, char* argv[]) {
 	else if (strcmp(argv[gameName], "Gomoku") == 0) {
 		try {
 			 newGame = new Gomoku();
+		}
+		catch (bad_alloc b) {
+			throw b;
+		}
+	}
+	else if (strcmp(argv[gameName], "Sudoku") == 0) {
+		try {
+			newGame = new SudokuGame();
 		}
 		catch (bad_alloc b) {
 			throw b;

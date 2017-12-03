@@ -7,6 +7,7 @@
 #include "Lab4Header.h"
 #include "GamePieceHeader.h"
 #include "TicTacToeHeader.h"
+#include "SudokuHeader.h"
 #include "GomokuHeader.h"
 #include "GameBaseHeader.h"
 #include <iostream>
@@ -45,7 +46,7 @@ int main(int argc, char* argv[])
 	}
 	if (newGame == nullptr) {
 		// some error with input
-		usageMessage("passing 'TicTacToe' or 'Gomoku' as a command line argument. ");
+		usageMessage("passing 'TicTacToe', 'Sudoku', or 'Gomoku' as a command line argument. ");
 		return commandLineArgsInvalid;
 	}
 	else {
