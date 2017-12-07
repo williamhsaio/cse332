@@ -112,12 +112,6 @@ bool SudokuGame::coordinateValid(unsigned int row, unsigned int col) {
 		// call turn again to get a valid coordinate
 		return false;
 	}
-	if (board[rows*row + col].displayChar != " ") {
-		// this space is already occupied
-		cout << "This space is already full." << endl;
-		// call turn again to get a valid coordinate
-		return false;
-	}
 	return true;
 }
 
