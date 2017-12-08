@@ -1,7 +1,6 @@
 #pragma once
-//Lab2Header.h
 //Halley Cummings : halley@wustl.edu
-//Declarations of array indices and possible failures. To be used by Lab2.cpp.
+//Declarations of array indices and possible failures. To be used by Lab4Source.cpp.
 
 #include "GamePieceHeader.h"
 #include <iostream>
@@ -11,9 +10,9 @@
 #include <sstream>
 using namespace std;
 
-enum arrayIndices { programName, gameName , numArguments};
+enum arrayIndices { programName, gameName, numArguments };
 enum failures {
-	success, quitGame, drawnGame, gameInterrupted, memoryError, commandLineArgsInvalid
+	success, quitGame, drawnGame, gameInterrupted, memoryError, commandLineArgsInvalid, initError, fileReadError
 };
 
 //function declarations

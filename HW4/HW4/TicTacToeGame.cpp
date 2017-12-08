@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameBaseHeader.h"
 #include "TicTacToeHeader.h"
-#include "Lab4NewHeader.h"
+#include "Lab4Header.h"
 #include <string>
 #include <vector>
 #include <iomanip>
@@ -18,15 +18,22 @@ TicTacToeGame::TicTacToeGame()
 	if (TicTacToeinFile.is_open()) {
 		getline(TicTacToeinFile, line);
 	}
+	else {
+		throw fileReadError;
+	}
 	if (line != "No Save") {
 		string moves;
 		string whoTurn;
 		//intialize based on contents of txt
-		getline(TicTacToeinFile, moves);
-		getline(TicTacToeinFile, whoTurn);
+		if (!getline(TicTacToeinFile, moves)) {
+			throw fileReadError;
+		}
+		if (!getline(TicTacToeinFile, whoTurn)) {
+			throw fileReadError;
+		}
 		string m;
 		stringstream loadedMoves(moves);
-		for (int i = 0; i < rows*cols; i++) {
+		for (unsigned int i = 0; i < rows*cols; i++) {
 			loadedMoves >> m;
 			if (m == "-") {
 				m = " ";
@@ -113,6 +120,13 @@ bool TicTacToeGame::done() {
 			cout << "Player X won the game after " << turns << " turns." << endl;
 		}
 		turns = 0; // set to 0 so message only prints once
+	}
+	if (isDone) {
+		// clear saved gameboard since game was won
+		ofstream TicTacToeFile;
+		TicTacToeFile.open("TicTacToe.txt");
+		TicTacToeFile << "No Save";
+		TicTacToeFile.close();
 	}
 	return isDone;
 }
@@ -203,9 +217,6 @@ int TicTacToeGame::turn() {
 // declaration for ostream operator <<
 ostream &operator<<(ostream &out, const TicTacToeGame &game) {
 	vector<GamePiece> pieces = game.board;
-	for (int i = 0; i < pieces.size(); i++) {
-		cout << i << ": " << pieces[i].displayChar << endl;
-	}
 	for (int r = (int)game.rows - 1; r >= -1; --r) {
 		for (int c = -1; c < (int)game.cols; ++c) {
 
@@ -245,7 +256,7 @@ void TicTacToeGame::save() {
 		ofstream TicTacToeFile;
 		TicTacToeFile.open("TicTacToe.txt");
 		TicTacToeFile << "TicTacToe" << endl;
-		for (int i = 0; i < rows*cols; i++) {
+		for (unsigned int i = 0; i < rows*cols; i++) {
 			if (board[i].displayChar == " ") {
 				board[i].displayChar = "-";
 			}
@@ -258,7 +269,7 @@ void TicTacToeGame::save() {
 		else {
 			TicTacToeFile << "O Turn" << endl;
 		}
-
+		TicTacToeFile.close();
 	}
 	else if (response == "No") {
 		ofstream TicTacToeFile;

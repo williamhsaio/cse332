@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "GameBaseHeader.h"
-#include "Lab4NewHeader.h"
+#include "Lab4Header.h"
 #include "TicTacToeHeader.h"
 #include "GomokuHeader.h"
 #include "SudokuHeader.h"
@@ -20,7 +20,7 @@ shared_ptr<GameBase> GameBase::game = nullptr;
 
 shared_ptr<GameBase> GameBase::instance() {
 	if (GameBase::game == nullptr) {
-		cout << "Throw in instance" << endl;
+		cout << "The current game is null." << endl;
 		throw "The Game is Null";
 	}
 	return GameBase::game;
@@ -65,6 +65,9 @@ void GameBase::inputArgs(int argc, char* argv[]) {
 		catch (bad_alloc b) {
 			throw b;
 		}
+		catch (int e) {
+			throw e;
+		}
 	}
 	else {
 		GameBase *newGame = nullptr;
@@ -94,6 +97,11 @@ int GameBase::prompt(unsigned int &row, unsigned int &col) {
 	if (input.size() > 5) {
 		// improperly formatted string; call prompt again
 		cout << "Input string is too long." << endl;
+		return prompt(row, col);
+	}
+
+	if (input.size() == 0)
+	{
 		return prompt(row, col);
 	}
 

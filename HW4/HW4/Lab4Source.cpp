@@ -7,7 +7,6 @@
 #include "Lab4Header.h"
 #include "GamePieceHeader.h"
 #include "TicTacToeHeader.h"
-#include "SudokuHeader.h"
 #include "GomokuHeader.h"
 #include "GameBaseHeader.h"
 #include <iostream>
@@ -29,28 +28,38 @@ int makeLowercase(string & text) {
 }
 
 
-int usageMessage( const string & directions)
+int usageMessage(const string & directions)
 {
 	cout << "Please run the game by " << directions << endl;
 	return success;
 }
 
 int main(int argc, char* argv[])
-{	
-	shared_ptr<GameBase> newGame;
+{
+
+	//shared_ptr<GameBase> newGame;
 	try {
-		newGame = shared_ptr<GameBase> (GameBase::inputArgs(argc, argv));
+		GameBase::inputArgs(argc, argv);
+		shared_ptr<GameBase> newGame = GameBase::instance();
+		if (newGame == nullptr) {
+			// some error with input
+			usageMessage("passing 'TicTacToe', 'Sudoku,' or 'Gomoku' as a command line argument. ");
+			return commandLineArgsInvalid;
+		}
+		else {
+			return newGame->play();
+		}
 	}
 	catch (bad_alloc b) {
+		cout << "Issue with memory allocation." << endl;
 		return memoryError;
 	}
-	if (newGame == nullptr) {
-		// some error with input
-		usageMessage("passing 'TicTacToe', 'Sudoku', or 'Gomoku' as a command line argument. ");
-		return commandLineArgsInvalid;
+	catch(int e){
+		return e;
 	}
-	else {
-		return newGame->play();
-	}
+	catch (...) {
+		usageMessage("passing 'TicTacToe', 'Sudoku,' or 'Gomoku' as a command line argument. ");
+		return initError;
 
+	}
 }

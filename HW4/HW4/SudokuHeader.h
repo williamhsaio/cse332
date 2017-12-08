@@ -14,8 +14,11 @@ public:
 	virtual void print();
 	virtual void save();
 	virtual bool coordinateValid(unsigned int row, unsigned int col);
+	vector<unsigned int> permanentVal;
 private:
 	int promptValue(int &val);
+	bool isPermanent(unsigned int index);
+	bool loadSavedFile();
 };
 
 // declaration for ostream operator

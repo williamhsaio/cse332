@@ -1,46 +1,96 @@
 #include "stdafx.h"
 #include "GameBaseHeader.h"
 #include "SudokuHeader.h"
-#include "Lab4NewHeader.h"
+#include "Lab4Header.h"
 #include <string>
 #include <vector>
 #include <iomanip>
 using namespace std;
 
+bool SudokuGame::loadSavedFile() {
+	ifstream SudokuInFile("SudokuGame.txt");
+	string line;
+	if (SudokuInFile.is_open()) {
+		// read in saved game state
+		int row = 8;
+		unsigned int col = 0;
+		int value;
+		while (getline(SudokuInFile, line)) {
+			if (line == "No Save") {
+				// file is empty of saved game
+				cout << "No previous game was saved. Using initial set up." << endl;
+				return false;
+			}
+			col = 0;
+			istringstream iss(line);
+			while (iss >> value) {
+				if (col > cols) {
+					// too many values in this row
+					cout << "Invalid saved file. Used initial game set up." << endl;
+					return false;
+				}
+				if (value != 0) {
+					if (value < 0) {
+						board[9 * row + col].displayChar = to_string(-1 * value); // negative values in saved file denote permanent values
+						permanentVal.push_back(9 * row + col);
+					}
+					else {
+						board[9 * row + col].displayChar = to_string(value);
+					}
+				}
+				++col;
+			}
+			--row;
+		}
+		if (row != -1) { // this means that more or less than 9 rows were found in the saved file.
+			cout << "Invalid number of rows read from input file. Using initial game set up." << endl;
+			return false;
+		}
+	}
+	return true;
+}
 SudokuGame::SudokuGame() {
 	rows = 9;
 	cols = 9;
 	// initialize board to be full of empty GamePieces
-	ifstream SudokuInFile("Sudoku.txt");
-	string line;
-	if (SudokuInFile.is_open()) {
-		getline(SudokuInFile, line);
+	for (unsigned int i = 0; i < rows*cols; ++i) {
+		board.push_back(GamePiece());
 	}
-	if (line != "No Save") {
-		string moves;
-		//intialize based on contents of txt
-		getline(SudokuInFile, moves);
-		string m;
-		stringstream loadedMoves(moves);
-		for (int i = 0; i < rows*cols; i++) {
-			loadedMoves >> m;
-			cout << m << endl;
-			if (m == "-") {
-				m = " ";
+	bool usedSavedFile = loadSavedFile(); // try to find a saved version and use it
+   if(!usedSavedFile) {
+		// no saved game found; use base file
+	   cout << "Loading clean gameboard." << endl;
+		ifstream SudokuInFile("sudoku0.txt");
+		if (SudokuInFile.is_open()) {
+			// read in initial game state
+			int row = 8; //unsigned because goes negative when end of rows is reached and I need to check that.
+			unsigned int col = 0;
+			unsigned int value;
+			string line;
+			while (getline(SudokuInFile, line)) {
+				col = 0;
+				istringstream iss(line);
+				while (iss >> value) {
+					if (value != 0) {
+						board[9 * row + col].displayChar = to_string(value);
+						permanentVal.push_back(9 * row + col);
+					}
+					else {
+						board[9 * row + col].displayChar = " "; // convert all 0 spaces to blank values in vector
+					}
+					++col;
+				}
+				--row;
 			}
-			GamePiece temp = GamePiece();
-			temp.displayChar = m;
-			board.push_back(temp);
-
+			if (row != -1) {
+				throw fileReadError; // didn't finish reading lines
+			}
+		}
+		else {
+			throw fileReadError;
 		}
 	}
-
-	else {
-		// initialize board to be full of empty GamePieces
-		for (unsigned int i = 0; i < rows*cols; ++i) {
-			board.push_back(GamePiece());
-		}
-	}
+	
 }
 
 bool SudokuGame::done() {
@@ -125,18 +175,31 @@ bool SudokuGame::draw() {
 	return false;
 }
 
+bool SudokuGame::isPermanent(unsigned int index) {
+	for (unsigned int i = 0; i < permanentVal.size(); ++i) {
+		if (index == permanentVal[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+
 bool SudokuGame::coordinateValid(unsigned int row, unsigned int col) {
 	//check coordinate is valid for the Sudoku board
-	if ((row < 0) || (row >= rows - 1)) {
+	if ((row < 0) || (row > rows - 1)) {
 		// coordinate value is invalid
 		cout << "Please enter a row coordinate between 0 and " << (rows - 1) << endl;
 		// call turn again to get a valid coordinate
 		return false;
 	}
-	if ((col < 0) || (col >= cols - 1)) {
+	if ((col < 0) || (col > cols - 1)) {
 		// coordinate value is invalid
 		cout << "Please enter a column coordinate between 0 and " << (cols - 1) << endl;
 		// call turn again to get a valid coordinate
+		return false;
+	}
+	if (isPermanent(cols*row + col)) {
+		cout << "This is a permanent value provided at the start of the game. Please enter a different coordinate." << endl;
 		return false;
 	}
 	return true;
@@ -148,6 +211,10 @@ int SudokuGame::promptValue(int &val) {
 	makeLowercase(display);
 	if (display == string("quit")) {
 		return quitGame;
+	}
+	if (display.size() > 1) {
+		cout << "Please enter a valid number 1 - 9." << endl;
+		return promptValue(val);
 	}
 	istringstream iss(display);
 	iss >> val;
@@ -243,21 +310,36 @@ void SudokuGame::save() {
 
 	if (response == "Yes") {
 		ofstream SudokuFile;
-		SudokuFile.open("Sudoku.txt");
-		SudokuFile << "Sudoku" << endl;
-		for (int i = 0; i < rows*cols; i++) {
-			if (board[i].displayChar == " ") {
-				board[i].displayChar = "-";
+		SudokuFile.open("SudokuGame.txt");
+		int row = 8;
+		unsigned int col = 0;
+		while (row != -1) {
+			col = 0;
+			while (col != cols) {
+				string value = board[cols*row + col].displayChar;
+				if (value == " ") {
+					SudokuFile << "0 ";
+				}
+				else if(isPermanent(cols*row + col)) {
+					SudokuFile << "-" << value << " "; // negative denotes it is permanent
+				}
+				else {
+					SudokuFile << value << " ";
+				}
+				++col;
 			}
-			SudokuFile << board[i].displayChar << " ";
+			if (row >= 0) { // go to next row of file
+				SudokuFile << endl;
+			}
+			--row;
 		}
-		SudokuFile << endl;
-
-	}
-	else if (response == "No") {
-		ofstream SudokuFile;
-		SudokuFile.open("Sudoku.txt");
-		SudokuFile << "No Save";
 		SudokuFile.close();
+	}
+	else {
+		// do not want to save game
+		ofstream GomokuFile;
+		GomokuFile.open("SudokuGame.txt");
+		GomokuFile << "No Save";
+		GomokuFile.close();
 	}
 }
