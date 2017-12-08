@@ -163,7 +163,6 @@ int GameBase::play() {
 	}
 
 	if (done()) {
-		cout << "The current player won after " << turns << " turns." << endl;
 		return success;
 	}
 	else if (draw()) {
