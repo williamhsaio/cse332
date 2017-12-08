@@ -1,19 +1,48 @@
 #include "stdafx.h"
 #include "GameBaseHeader.h"
 #include "TicTacToeHeader.h"
-#include "Lab4Header.h"
+#include "Lab4NewHeader.h"
 #include <string>
 #include <vector>
 #include <iomanip>
+#include <fstream>
 using namespace std;
 
-TicTacToeGame::TicTacToeGame() 
-	: currentPlayerIsX(true), XHistory("Player X: "), OHistory("Player O: "), currentPathsToWin(8){
+TicTacToeGame::TicTacToeGame()
+	: currentPlayerIsX(true), XHistory("Player X: "), OHistory("Player O: "), currentPathsToWin(8) {
 	rows = 5;
 	cols = 5;
-	// initialize board to be full of empty GamePieces
-	for (unsigned int i = 0; i < rows*cols; ++i) {
-		board.push_back(GamePiece());
+
+	ifstream TicTacToeinFile("TicTacToe.txt");
+	string line;
+	if (TicTacToeinFile.is_open()) {
+		getline(TicTacToeinFile, line);
+	}
+	if (line != "No Save") {
+		string moves;
+		string whoTurn;
+		//intialize based on contents of txt
+		getline(TicTacToeinFile, moves);
+		getline(TicTacToeinFile, whoTurn);
+		string m;
+		stringstream loadedMoves(moves);
+		for (int i = 0; i < rows*cols; i++) {
+			loadedMoves >> m;
+			if (m == "-") {
+				m = " ";
+			}
+			GamePiece temp = GamePiece();
+			temp.displayChar = m;
+			board.push_back(temp);
+
+		}
+	}
+
+	else{
+		// initialize board to be full of empty GamePieces
+		for (unsigned int i = 0; i < rows*cols; ++i) {
+			board.push_back(GamePiece());
+		}
 	}
 }
 
@@ -74,7 +103,7 @@ bool TicTacToeGame::done() {
 	else if (sameDisplayChar(board, 16, 12, 8, currentPathsToWin)) {
 		isDone = true;
 	}
-	if (isDone && (turns !=0 )) {
+	if (isDone && (turns != 0)) {
 		if (currentPlayerIsX) {
 			cout << endl;
 			cout << "Player O won the game after " << turns << " turns." << endl;
@@ -100,7 +129,7 @@ bool TicTacToeGame::draw() {
 	// otherwise, game is a draw 
 	return true;
 }
- bool TicTacToeGame::coordinateValid(unsigned int row, unsigned int col) {
+bool TicTacToeGame::coordinateValid(unsigned int row, unsigned int col) {
 	//check coordinate is valid for the TicTacToe board
 	if ((row <= 0) || (row >= rows - 1)) {
 		// coordinate value is invalid
@@ -174,6 +203,9 @@ int TicTacToeGame::turn() {
 // declaration for ostream operator <<
 ostream &operator<<(ostream &out, const TicTacToeGame &game) {
 	vector<GamePiece> pieces = game.board;
+	for (int i = 0; i < pieces.size(); i++) {
+		cout << i << ": " << pieces[i].displayChar << endl;
+	}
 	for (int r = (int)game.rows - 1; r >= -1; --r) {
 		for (int c = -1; c < (int)game.cols; ++c) {
 
@@ -182,7 +214,7 @@ ostream &operator<<(ostream &out, const TicTacToeGame &game) {
 				out << " ";
 			}
 			else if (r == -1) {
-				out << setw(game.displayLength+1) << c;
+				out << setw(game.displayLength + 1) << c;
 			}
 			else if (c == -1) {
 				out << r;
@@ -200,4 +232,39 @@ ostream &operator<<(ostream &out, const TicTacToeGame &game) {
 
 void TicTacToeGame::print() {
 	cout << *this << endl;
+}
+
+void TicTacToeGame::save() {
+	string response;
+	while ((response != "Yes") && (response != "No")) {
+		cout << "Would you like to save this game? Yes or No" << endl;
+		cin >> response;
+	}
+
+	if (response == "Yes") {
+		ofstream TicTacToeFile;
+		TicTacToeFile.open("TicTacToe.txt");
+		TicTacToeFile << "TicTacToe" << endl;
+		for (int i = 0; i < rows*cols; i++) {
+			if (board[i].displayChar == " ") {
+				board[i].displayChar = "-";
+			}
+			TicTacToeFile << board[i].displayChar << " ";
+		}
+		TicTacToeFile << endl;
+		if (currentPlayerIsX) {
+			TicTacToeFile << "X Turn" << endl;
+		}
+		else {
+			TicTacToeFile << "O Turn" << endl;
+		}
+
+	}
+	else if (response == "No") {
+		ofstream TicTacToeFile;
+		TicTacToeFile.open("TicTacToe.txt");
+		TicTacToeFile << "No Save";
+		TicTacToeFile.close();
+	}
+
 }

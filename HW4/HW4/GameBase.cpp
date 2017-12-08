@@ -4,24 +4,45 @@
 
 #include "stdafx.h"
 #include "GameBaseHeader.h"
-#include "Lab4Header.h"
+#include "Lab4NewHeader.h"
 #include "TicTacToeHeader.h"
-#include "SudokuHeader.h"
 #include "GomokuHeader.h"
+#include "SudokuHeader.h"
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <memory>
 
 using namespace std;
 
-GameBase::GameBase()
-:rows(0), cols(0), displayLength(0){}
+shared_ptr<GameBase> GameBase::game = nullptr;
 
-GameBase* GameBase::inputArgs(int argc, char* argv[]) {
-	GameBase* newGame;
+
+shared_ptr<GameBase> GameBase::instance() {
+	if (GameBase::game == nullptr) {
+		cout << "Throw in instance" << endl;
+		throw "The Game is Null";
+	}
+	return GameBase::game;
+}
+
+
+
+GameBase::GameBase()
+	:rows(0), cols(0), displayLength(0) {
+	//game = nullptr;
+}
+
+void GameBase::inputArgs(int argc, char* argv[]) {
+	GameBase* newGame = 0;
+	if (GameBase::game != nullptr) {
+		throw "The Game isn't Null";
+	}
+
 	if (strcmp(argv[gameName], "TicTacToe") == 0) {
 		try {
-			newGame = new TicTacToeGame();
+			TicTacToeGame *newGame = new TicTacToeGame();
+			GameBase::game = make_shared<TicTacToeGame>(*newGame); //used to free up memory once all instances of game are nullptr
 		}
 		catch (bad_alloc b) {
 			throw b;
@@ -29,7 +50,8 @@ GameBase* GameBase::inputArgs(int argc, char* argv[]) {
 	}
 	else if (strcmp(argv[gameName], "Gomoku") == 0) {
 		try {
-			 newGame = new Gomoku();
+			Gomoku *newGame = new Gomoku();
+			GameBase::game = make_shared<Gomoku>(*newGame);
 		}
 		catch (bad_alloc b) {
 			throw b;
@@ -37,16 +59,17 @@ GameBase* GameBase::inputArgs(int argc, char* argv[]) {
 	}
 	else if (strcmp(argv[gameName], "Sudoku") == 0) {
 		try {
-			newGame = new SudokuGame();
+			SudokuGame *newGame = new SudokuGame();
+			GameBase::game = make_shared<SudokuGame>(*newGame);
 		}
 		catch (bad_alloc b) {
 			throw b;
 		}
 	}
 	else {
-		newGame = nullptr;
+		GameBase *newGame = nullptr;
+
 	}
-	return newGame; // returns null ptr if not assigned
 }
 
 int GameBase::prompt(unsigned int &row, unsigned int &col) {
@@ -55,7 +78,7 @@ int GameBase::prompt(unsigned int &row, unsigned int &col) {
 	getline(cin, input); // take input in the form of a C++ string
 	cout << endl; // print blank line
 
-	// remove any spaces from input line
+				  // remove any spaces from input line
 	while (input.find(" ") != string::npos) {
 		input.erase(input.find(" "), 1);
 	}
@@ -63,6 +86,8 @@ int GameBase::prompt(unsigned int &row, unsigned int &col) {
 	makeLowercase(input);
 	// check if this is the quit command
 	if (input == "quit") {
+		//ask them to save
+		save();
 		return quitGame;
 	}
 
@@ -130,6 +155,7 @@ int GameBase::play() {
 	}
 
 	if (done()) {
+		cout << "The current player won after " << turns << " turns." << endl;
 		return success;
 	}
 	else if (draw()) {
@@ -139,3 +165,4 @@ int GameBase::play() {
 	}
 	return gameInterrupted; // ended in unexpected way (not win, draw, or quit)
 }
+

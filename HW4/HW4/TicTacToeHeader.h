@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 using namespace std;
 #include <string>
 #include "GameBaseHeader.h"
@@ -12,6 +13,7 @@ public:
 	virtual bool draw();
 	virtual int turn();
 	virtual void print();
+	virtual void save();
 	virtual bool coordinateValid(unsigned int row, unsigned int col);
 private:
 	bool currentPlayerIsX;

@@ -18,7 +18,7 @@ using namespace std;
 
 enum errors { successTTT, playerQuit, gameOver, Draw, nextTurn };
 
-class Gomoku : public GameBase{
+class Gomoku : public GameBase {
 
 private:
 	vector<GamePiece> board;
@@ -35,6 +35,7 @@ public:
 	virtual bool draw();
 	virtual int turn();
 	virtual void print();
+	virtual void save();
 	virtual bool coordinateValid(unsigned int row, unsigned int col);
 
 	friend ostream& operator<<(ostream& os, const Gomoku& gmk); //Making it so that when you call TicTacToe
